@@ -6,6 +6,9 @@ from django.utils.translation import gettext_lazy as _
 class Category(models.Model):
     name = models.CharField(max_length=64)
 
+    class Meta:
+        verbose_name_plural = 'Categories'
+
 
 class Institution(models.Model):
     class InstitutionType(models.TextChoices):
