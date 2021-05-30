@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
 
-from sharegood.models import Donation
+from sharegood.models import Donation, Institution
 
 
 class LandingPage(View):
@@ -13,9 +13,11 @@ class LandingPage(View):
         quantity = sum([donation.quantity for donation in donations])
         institutions = len(set([donation.institution_id for donation in
                                 donations]))
+        institution_list = Institution.objects.all()
         context = {
             'quantity': quantity,
-            'institutions': institutions
+            'institutions': institutions,
+            'institution_list': institution_list
         }
         return render(request, self.template_name, context)
 
