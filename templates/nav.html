@@ -11,10 +11,11 @@
                     </ul>
             </li>
             {% else %}
-            <li><a href="" class="btn btn--small btn--without-border">Zaloguj</a>
+            <li><a href="{% url 'login' %}"
+                   class="btn btn--small btn--without-border">Zaloguj</a>
             </li>
-            <li><a href="#" class="btn btn--small btn--highlighted">Załóż
-                konto</a></li>
+            <li><a href="{% url 'register' %}"
+                   class="btn btn--small btn--highlighted">Załóż konto</a></li>
             {% endif %}
         </ul>
 
