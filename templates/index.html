@@ -92,18 +92,20 @@
                 zbiórkom</a></li>
         </ul>
 
-        {% for institution in institution_list %}
+
         <!-- SLIDE 1 -->
-        {% if institution.institution_type == 'FUND' %}
+
         <div class="help--slides active" data-id="1">
 
             <p>W naszej bazie znajdziesz listę zweryfikowanych Fundacji, z
                 którymi współpracujemy. Możesz sprawdzić czym się zajmują, komu
                 pomagają i czego potrzebują.</p>
-
             <ul class="help--slides-items">
+            {% for institution in institution_list %}
+            {% if institution.institution_type == 'FUND' %}
                 <li>
                     <div class="col">
+
                         <div class="title">{{ institution.name }}</div>
                         <div class="subtitle">{{ institution.description }}
                                 </div>
@@ -117,6 +119,8 @@
                         </div>
                     </div>
                 </li>
+                {% endif %}
+                {% endfor %}
             </ul>
 
             <!-- Pagination
@@ -130,13 +134,15 @@
 
 
         <!-- SLIDE 2 -->
-        {% elif institution.institution_type == 'NGOV' %}
+
         <div class="help--slides" data-id="2">
             <p>W naszej bazie znajdziesz listę zweryfikowanych Organizacji
                 pozarządowych, z którymi współpracujemy. Możesz sprawdzić czym
                 się zajmują, komu pomagają i czego potrzebują.
             </p>
             <ul class="help--slides-items">
+            {% for institution in institution_list %}
+            {% if institution.institution_type == 'NGOV' %}
                 <li>
                     <div class="col">
                         <div class="title">{{ institution.name }}</div>
@@ -152,6 +158,8 @@
                         </div>
                     </div>
                 </li>
+                {% endif %}
+                {% endfor %}
             </ul>
 
             <!-- Pagination
@@ -166,12 +174,14 @@
         </div>
 
         <!-- SLIDE 3 -->
-        {% elif institution.institution_type == 'CHAR' %}
+
         <div class="help--slides" data-id="3">
             <p>W naszej bazie znajdziesz listę zweryfikowanych lokalnych
                 zbiórek. Możesz sprawdzić jaki jest cel zbiórki i
                 jakie są najpilniejsze potrzeby.</p>
             <ul class="help--slides-items">
+                {% for institution in institution_list %}
+                {% if institution.institution_type == 'CHAR' %}
                 <li>
                     <div class="col">
                         <div class="title">{{ institution.name }}</div>
@@ -187,6 +197,8 @@
                         </div>
                     </div>
                 </li>
+                {% endif %}
+                {% endfor %}
             </ul>
 
             <!-- Pagination
@@ -196,8 +208,7 @@
             </ul>
             -->
         </div>
-        {% endif %}
-        {% endfor %}
+
     </section>
 
 {% endblock %}
