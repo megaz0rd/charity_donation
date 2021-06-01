@@ -1,9 +1,11 @@
-from django.contrib.auth import get_user_model
-from django.shortcuts import render
+from django.contrib.auth import get_user_model, login, authenticate
+from django.contrib.auth.views import LoginView
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView, FormView
 
+from sharegood.forms import LoginForm, RegisterForm
 from sharegood.models import Donation, Institution
 
 
@@ -28,21 +30,20 @@ class AddDonation(TemplateView):
     template_name = "form.html"
 
 
-class Login(TemplateView):
+class Login(LoginView):
+    form_class = LoginForm
     template_name = "login.html"
+    success_url = reverse_lazy('landing-page')
 
 
 class Register(CreateView):
     model = get_user_model()
-    fields = ['email', 'password', 'first_name', 'last_name']
+    form_class = RegisterForm
     template_name = "register.html"
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):
         user = form.save(commit=False)
-        user.first_name = form.cleaned_data.get("first_name")
-        user.last_name = form.cleaned_data.get("last_name")
         user.username = form.cleaned_data.get('email')
-        user.set_password(form.cleaned_data.get('password'))
         user.save()
         return super(Register, self).form_valid(form)
