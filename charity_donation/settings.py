@@ -63,6 +63,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Authentication
+
+AUTH_USER_MODEL = 'sharegood.CustomUser'
+AUTHENTICATION_BACKENDS = ['sharegood.backend.EmailBackend']
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
