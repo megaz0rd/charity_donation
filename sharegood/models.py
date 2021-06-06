@@ -10,6 +10,9 @@ class CustomUser(AbstractUser):
 class Category(models.Model):
     name = models.CharField(max_length=64)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         verbose_name_plural = 'Categories'
 
@@ -27,6 +30,9 @@ class Institution(models.Model):
                                         default=InstitutionType.FOUNDATION)
     categories = models.ManyToManyField(Category)
 
+    def __str__(self):
+        return self.name
+
 
 class Donation(models.Model):
     quantity = models.IntegerField()
@@ -37,6 +43,9 @@ class Donation(models.Model):
     zip_code = models.CharField(max_length=6)
     phone_number = models.CharField(max_length=13)
     pick_up_date = models.DateField()
-    pick_up_time = models.DateTimeField()
+    pick_up_time = models.TimeField()
     pick_up_comment = models.CharField(max_length=256)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.institution.name
