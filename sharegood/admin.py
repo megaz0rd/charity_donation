@@ -25,7 +25,7 @@ admin.site.register(Donation, DonationAdmin)
 
 
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'first_name', 'last_name')
+    list_display = ('id', 'username', 'first_name', 'last_name', 'is_staff')
     search_fields = ('username', 'email')
     readonly_fields = ('id',)
 
