@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    Profil użytkownika
+{% endblock %}
+
+{% block content %}
+    <section class="login-page">
+        <div class="container">
+            <div class="stats--item">
+                <h1>Twoje dane</h1>
+                <p> Imię: {{ object.first_name }}</p>
+                <p> Nazwisko: {{ object.last_name }}</p>
+                <p> Adres email: {{ object.email }}</p>
+                <div class="form-group form-group--buttons">
+                    <a href="{% url 'edit-profile' %}" class="btn">Zmień dane</a>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
