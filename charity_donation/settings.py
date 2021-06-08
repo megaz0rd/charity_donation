@@ -11,7 +11,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # my apps
     'sharegood.apps.SharegoodConfig',
+    # 3rd part apps
+    'formtools',
 ]
 
 MIDDLEWARE = [
@@ -63,17 +66,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Authentication
+# Authentication and Login
 
 AUTH_USER_MODEL = 'sharegood.CustomUser'
 AUTHENTICATION_BACKENDS = ['sharegood.backend.EmailBackend']
 
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pl'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
@@ -95,4 +102,5 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-LOGOUT_REDIRECT_URL = '/'
+
+SESSION_COOKIE_AGE = 6000
