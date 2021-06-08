@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -12,7 +12,12 @@ from django.views.generic import (
     UpdateView
 )
 
-from sharegood.forms import LoginForm, RegisterForm, UserEditForm
+from sharegood.forms import (
+    RegisterForm,
+    LoginForm,
+    UserEditForm,
+    UserPasswordChangeForm
+)
 from sharegood.models import Donation, Institution, CustomUser
 
 
@@ -80,3 +85,14 @@ class UserEditView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return self.request.get_full_path()
+
+
+class UserPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
+    """Powers a form to edit a user's password"""
+
+    template_name = 'registration/change_password.html'
+    form_class = UserPasswordChangeForm
+    success_url = reverse_lazy('landing-page')
+
+    def get_success_message(self, cleaned_data):
+        return "Twoje hasło zostało zmienione!"

@@ -14,6 +14,8 @@
                 <p> Nazwisko: {{ object.last_name }}</p>
                 <p> Adres email: {{ object.email }}</p>
                 <div class="form-group form-group--buttons">
+                    <a href="{% url 'change-password' %}" class="btn">Zmień
+                        hasło</a>
                     <a href="{% url 'edit-profile' %}" class="btn">Zmień dane</a>
                 </div>
             </div>

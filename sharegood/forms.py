@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import (
     UserCreationForm,
-    AuthenticationForm, UserChangeForm,
+    AuthenticationForm, UserChangeForm, PasswordChangeForm,
 )
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
@@ -71,3 +71,38 @@ class UserEditForm(UserChangeForm):
         if not check_password(confirm_password, self.instance.password):
             if not self.errors:
                 self.add_error('confirm_password', 'Podano błędne hasło.')
+
+
+class UserPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(required=True,
+                                   widget=forms.PasswordInput(
+                                       attrs={
+                                           'class': 'form-control'
+                                       }),
+                                   error_messages={
+                                       'required': 'Hasło nie może być puste'
+                                   })
+    new_password1 = forms.CharField(required=True,
+                                    widget=forms.PasswordInput(
+                                        attrs={
+                                            'class': 'form-control'
+                                        }),
+                                    error_messages={
+                                        'required': 'Hasło nie może być puste'
+                                    })
+    new_password2 = forms.CharField(required=True,
+                                    widget=forms.PasswordInput(
+                                        attrs={
+                                            'class': 'form-control'
+                                        }),
+                                    error_messages={
+                                        'required': 'Hasło nie może być puste'
+                                    })
+
+    class Meta:
+        model = get_user_model()
+        fields = (
+            'old_password',
+            'new_password1',
+            'new_password2'
+        )
