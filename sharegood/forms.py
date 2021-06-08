@@ -75,28 +75,21 @@ class UserEditForm(UserChangeForm):
 
 class UserPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(required=True,
-                                   widget=forms.PasswordInput(
-                                       attrs={
-                                           'class': 'form-control'
-                                       }),
+                                   widget=forms.PasswordInput(),
                                    error_messages={
-                                       'required': 'Hasło nie może być puste'
+                                       'required': 'Podaj stare hasło!'
                                    })
     new_password1 = forms.CharField(required=True,
-                                    widget=forms.PasswordInput(
-                                        attrs={
-                                            'class': 'form-control'
-                                        }),
+                                    widget=forms.PasswordInput(),
                                     error_messages={
-                                        'required': 'Hasło nie może być puste'
+                                        'required': 'Nowe hasło nie może być '
+                                                    'puste!'
                                     })
     new_password2 = forms.CharField(required=True,
-                                    widget=forms.PasswordInput(
-                                        attrs={
-                                            'class': 'form-control'
-                                        }),
+                                    widget=forms.PasswordInput(),
                                     error_messages={
-                                        'required': 'Hasło nie może być puste'
+                                        'required': 'Potwierdzenie nowego '
+                                                    'hasła nie może być puste!'
                                     })
 
     class Meta:
