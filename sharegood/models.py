@@ -49,3 +49,6 @@ class Donation(models.Model):
 
     def __str__(self):
         return self.institution.name
+
+    class Meta:
+        ordering = ('-pick_up_date', '-pick_up_time')

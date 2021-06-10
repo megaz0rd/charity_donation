@@ -2,14 +2,17 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import ExpressionWrapper, F, DateTimeField
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views import View
 from django.views.generic import (
     CreateView,
     TemplateView,
     DetailView,
-    UpdateView
+    UpdateView,
+    ListView
 )
 
 from sharegood.forms import (
@@ -74,17 +77,18 @@ class ProfileView(UserPassesTestMixin, DetailView):
         return self.request.user == self.get_object()
 
 
-class UserEditView(LoginRequiredMixin, UpdateView):
+class UserEditView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     """Powers a form to edit a user model"""
 
     template_name = 'edit_profile.html'
     form_class = UserEditForm
+    success_url = reverse_lazy('landing-page')
 
     def get_object(self):
         return self.request.user
 
-    def get_success_url(self):
-        return self.request.get_full_path()
+    def get_success_message(self, cleaned_data):
+        return "Twoje dane zostały zmienione!"
 
 
 class UserPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
@@ -96,3 +100,39 @@ class UserPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
 
     def get_success_message(self, cleaned_data):
         return "Twoje hasło zostało zmienione!"
+
+
+class DonationListView(LoginRequiredMixin, View):
+    """Powers a view to a list of user's donations"""
+
+    template_name = 'donations.html'
+
+    def get(self, request, *args, **kwargs):
+        """Create new field 'my_dt' on model Donation to filter by combined
+        two other model's fields: Date and Time Field. Pass the results to
+        context."""
+        user_donations = Donation.objects.annotate(
+            my_dt=ExpressionWrapper(F('pick_up_date') + F('pick_up_time'),
+                                    output_field=DateTimeField())).filter(
+            user=request.user)
+
+        picked_up = user_donations.filter(my_dt__lt=timezone.now())
+        ordered = user_donations.filter(my_dt__gt=timezone.now())
+        context = {
+            'picked_up': picked_up,
+            'ordered': ordered
+        }
+        return render(request, self.template_name, context)
+
+
+class DonationDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+    """Powers a view to a donation's details"""
+
+    model = Donation
+    template_name = 'donation_detail.html'
+    pk_url_kwarg = 'pk'
+
+    def test_func(self):
+        """Forbidden access to the view if object Donation not belong to
+        request.user """
+        return self.request.user == self.get_object().user
