@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+    Twoje zbiórki
+{% endblock %}
+
+{% block header %}
+    <header class="header--main-page">
+        {% include "nav.html" %}
+        <div class="slogan container container--90">
+            <div class="slogan--item">
+                <h1>
+                    {% if picked_up|length == 0 %}
+                        Zacznij pomagać!
+                    {% else %}
+                        Twoje wsparcie trafiło już<br>
+                        do {{ picked_up|length }} organizacji.
+                    {% endif %}
+                </h1>
+            </div>
+        </div>
+    </header>
+{% endblock %}
+
+{% block content %}
+    <section id="stats" class="stats">
+        <div class="container container--85">
+            <div class="stats--item">
+                <em>Odebrane</em>
+                {% for donation in picked_up %}
+                <h3>{{ donation.institution }}</h3>
+                <p>Odebrano: {{ donation.my_dt }}.
+                    <a href="{% url 'donation-detail' donation.pk %}">Szczegóły
+                    &raquo;</a></p>
+                {% endfor %}
+            </div>
+            <div class="stats--item" style="width: 300px"></div>
+            <div class="stats--item">
+                <em>Do odbioru</em>
+                {% for donation in ordered %}
+                <h3>{{ donation.institution }}</h3>
+                <p>Termin odbioru: {{ donation.my_dt }}.
+                    <a href={% url 'donation-detail' donation.pk %}>Szczegóły
+                    &raquo;</a></p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

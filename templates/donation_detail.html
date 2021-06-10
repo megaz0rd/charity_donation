@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block title %}
+    Szczegóły zbiórki
+{% endblock %}
+
+{% block header %}
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+                <h2>{{ message }}</h2>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <header class="header--main-page">
+        {% include "nav.html" %}
+        <div class="slogan container container--90">
+            <div class="slogan--item">
+                <h1> Dary dla
+                    {{ object.institution.get_institution_type_display }}
+                    {{ object.institution }}
+                </h1>
+            </div>
+        </div>
+    </header>
+{% endblock %}
+
+{% block content %}
+    <section id="stats" class="stats">
+        <div class="container container--85">
+            <div class="stats--item">
+                <em>Ilość przekazanych worków: {{ object.quantity }}</em>
+                <h3>Kategorie: {% for category in object.categories.values %}
+                    {% if forloop.counter < object.categories.values|length %}
+                        {{ category.name }},
+                    {% else %}
+                        {{ category.name }}.
+                    {% endif %}
+                    {% endfor %}</h3>
+                <p>Termin odbioru: {{ object.pick_up_date }},
+                    {{ object.pick_up_time }}. <br>
+                    Uwagi do odbioru: {{ object.pick_up_comment }}
+                </p>
+
+            </div>
+        </div>
+    </section>
+{% endblock %}
