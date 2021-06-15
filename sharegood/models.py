@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(_('Email address'), unique=True)
 
 
 class Category(models.Model):
@@ -14,7 +14,7 @@ class Category(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Categories'
+        verbose_name_plural = _('Kategorie')
 
 
 class Institution(models.Model):
@@ -32,6 +32,9 @@ class Institution(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = _('Instytucje')
 
 
 class Donation(models.Model):
@@ -52,3 +55,4 @@ class Donation(models.Model):
 
     class Meta:
         ordering = ('-pick_up_date', '-pick_up_time')
+        verbose_name_plural = _('Donacje')
