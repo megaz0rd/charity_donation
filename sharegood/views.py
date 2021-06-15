@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.paginator import Paginator
 from django.db.models import ExpressionWrapper, F, DateTimeField
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -9,19 +10,27 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import (
     CreateView,
-    TemplateView,
     DetailView,
     UpdateView,
-    ListView
 )
+from formtools.wizard.views import SessionWizardView
 
 from sharegood.forms import (
-    RegisterForm,
+    AddDonationFormStepOne,
+    AddDonationFormStepTwo,
+    AddDonationFormStepThree,
+    AddDonationFormStepFour,
     LoginForm,
+    RegisterForm,
     UserEditForm,
-    UserPasswordChangeForm
+    UserPasswordChangeForm, AddDonationFormStepFive
 )
-from sharegood.models import Donation, Institution, CustomUser
+from sharegood.models import (
+    Category,
+    CustomUser,
+    Donation,
+    Institution
+)
 
 
 class LandingPageView(View):
@@ -32,17 +41,79 @@ class LandingPageView(View):
         quantity = sum([donation.quantity for donation in donations])
         institutions = len(set([donation.institution_id for donation in
                                 donations]))
-        institution_list = Institution.objects.all()
+
+        foundations = Institution.objects.filter(institution_type='FUND')
+        found_paginator = Paginator(foundations, 5)
+        ngos = Institution.objects.filter(institution_type='NGOV')
+        ngos_paginator = Paginator(ngos, 5)
+        charity = Institution.objects.filter(institution_type='CHAR')
+        charity_paginator = Paginator(charity, 5)
+
+        page_number = request.GET.get('foundations')
+        foundations = found_paginator.get_page(page_number)
+        page_number = request.GET.get('page2')
+        ngos = ngos_paginator.get_page(page_number)
+        page_number = request.GET.get('page3')
+        charities = charity_paginator.get_page(page_number)
+
         context = {
             'quantity': quantity,
             'institutions': institutions,
-            'institution_list': institution_list
+            'foundations': foundations,
+            'ngos': ngos,
+            'charities': charities
         }
         return render(request, self.template_name, context)
 
 
-class AddDonationView(TemplateView):
+class AddDonationView(SessionWizardView):
     template_name = "form.html"
+    form_list = (
+        AddDonationFormStepOne,
+        AddDonationFormStepTwo,
+        AddDonationFormStepThree,
+        AddDonationFormStepFour,
+        AddDonationFormStepFive
+    )
+
+    def get_context_data(self, form, **kwargs):
+        context = super(AddDonationView, self).get_context_data(form, **kwargs)
+        context['categories'] = Category.objects.all()
+        context['institutions'] = Institution.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        try:
+            return self.render(self.get_form())
+        except KeyError:
+            return super().get(request, *args, **kwargs)
+
+    def get_form_initial(self, step):
+        if step == '2':
+            step0data = self.get_cleaned_data_for_step('0')
+            if step0data:
+                categories = step0data.get('categories', '')
+                return self.initial_dict.get(step, {'categories': categories})
+        return self.initial_dict.get(step, {})
+
+    def done(self, form_list, **kwargs):
+        form_data = [form.cleaned_data for form in form_list]
+        categories = form_data[0]['categories']
+        donation = Donation.objects.create(
+            quantity=form_data[1]['quantity'],
+            institution=form_data[2]['institution'],
+            address=form_data[3]['address'],
+            city=form_data[3]['city'],
+            zip_code=form_data[3]['zip_code'],
+            phone_number=form_data[3]['phone_number'],
+            pick_up_date=form_data[3]['pick_up_date'],
+            pick_up_time=form_data[3]['pick_up_time'],
+            pick_up_comment=form_data[3]['pick_up_comment'],
+            user=self.request.user
+        )
+        donation.categories.set(categories)
+        return render(self.request, 'form-confirmation.html', {'form_data': [
+            form.cleaned_data for form in form_list]})
 
 
 class Login(LoginView):
