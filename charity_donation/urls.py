@@ -30,5 +30,6 @@ urlpatterns = [
          name='change-password'),
     path('donation/', views.DonationListView.as_view(), name='donation'),
     path('donation/<int:pk>/', views.DonationDetailView.as_view(),
-         name='donation-detail')
+         name='donation-detail'),
+    path('formsubmited/', views.DonationSuccess.as_view(), name="success")
 ]

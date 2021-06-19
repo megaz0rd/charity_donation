@@ -54,5 +54,5 @@ class Donation(models.Model):
         return self.institution.name
 
     class Meta:
-        ordering = ('-pick_up_date', '-pick_up_time')
+        ordering = ('pick_up_date', 'pick_up_time')
         verbose_name_plural = _('Donacje')
