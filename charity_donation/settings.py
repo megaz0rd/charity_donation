@@ -64,7 +64,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-]
+    {   
+        'NAME': 'sharegood.validators.CustomPasswordValidator',
+    },
+    ]
+
 
 # Authentication and Login
 
