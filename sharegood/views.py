@@ -1,12 +1,19 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
 from django.db.models import ExpressionWrapper, F, DateTimeField
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 from django.views.generic import (
     CreateView,
@@ -40,6 +47,8 @@ from sharegood.models import (
 )
 ## Comment line below if switched from AjaxForm to Session Wizard
 from sharegood.mixins import AjaxFormMixin
+
+from sharegood.tokens import account_activation_token
 
 class LandingPageView(View):
     template_name = "index.html"
@@ -169,12 +178,45 @@ class RegisterView(SuccessMessageMixin, CreateView):
         """Set provieded email as username"""
 
         user = form.save(commit=False)
-        user.username = form.cleaned_data.get('email')
+        to_email = form.cleaned_data.get('email')
+        user.username = to_email
+        user.is_active = False
         user.save()
+        current_site = get_current_site(self.request)
+        mail_subject = 'Aktywuj konto na charity-donation.'
+        message = render_to_string('account_active_email.html', {
+            'user': user,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token':account_activation_token.make_token(user),
+        })
+        email = EmailMessage(
+                    mail_subject, message, to=[to_email]
+        )
+        email.send()
         return super(RegisterView, self).form_valid(form)
 
     def get_success_message(self, cleaned_data):
-        return "Konto pomyślnie utworzone!"
+        return "Konto pomyślnie utworzone! Aktywuj je potwierdzając email."
+
+
+class Activate(View):
+    template_name = 'login.html'
+
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = CustomUser.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            messages.add_message(request, messages.INFO, 'Konto aktywne. Możesz się teraz zalogować.')
+            return render(request, self.template_name)
+        else:
+            messages.add_message(request, messages.WARNING, 'Link aktywacyjny wygasł.')
+            return render(request, self.template_name)
 
 
 class ProfileView(UserPassesTestMixin, LoginRequiredMixin, DetailView):

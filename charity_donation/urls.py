@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls import url
 
 from sharegood import views
 
@@ -31,5 +32,6 @@ urlpatterns = [
     path('donation/', views.DonationListView.as_view(), name='donation'),
     path('donation/<int:pk>/', views.DonationDetailView.as_view(),
          name='donation-detail'),
-    path('formsubmited/', views.DonationSuccess.as_view(), name="success")
+    path('formsubmited/', views.DonationSuccess.as_view(), name="success"),
+    path('activate/<str:uidb64>/<str:token>/', views.Activate.as_view(), name='activate'),
 ]
