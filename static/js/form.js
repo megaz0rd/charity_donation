@@ -13,11 +13,12 @@ $(document).ready(function(){
         })
     })
 
-    function handleFormSuccess(data, textStatus, jqXHR){
-        console.log(data)
-        console.log(textStatus)
-        console.log(jqXHR)
+    function handleFormSuccess(response, data, textStatus, jqXHR){
+        console.log(data);
+        console.log(textStatus);
+        console.log(jqXHR);
         $myForm[0].reset(); // reset form data
+        window.location.href = '../donation/confirm/';
     }
 
     function handleFormError(jqXHR, textStatus, errorThrown){

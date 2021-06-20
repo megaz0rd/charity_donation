@@ -139,7 +139,7 @@ class AddDonationView(AjaxFormMixin, CreateView):
     model = Donation
     template_name = "form.html"
     form_class = AddDonationSingleForm
-    success_url = "/formsubmited/"
+    success_url = reverse_lazy('success')
 
     def get_context_data(self, **kwargs):
         """Pass the category and institution objects to handle the individual steps of the form"""
@@ -155,8 +155,11 @@ class AddDonationView(AjaxFormMixin, CreateView):
         return super(AddDonationView, self).form_valid(form)
 
 
-class DonationSuccess(TemplateView):
+class DonationSuccess(View):
     template_name = "form-confirmation.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
 
 
 class Login(LoginView):

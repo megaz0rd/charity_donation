@@ -32,6 +32,6 @@ urlpatterns = [
     path('donation/', views.DonationListView.as_view(), name='donation'),
     path('donation/<int:pk>/', views.DonationDetailView.as_view(),
          name='donation-detail'),
-    path('formsubmited/', views.DonationSuccess.as_view(), name="success"),
-    path('activate/<str:uidb64>/<str:token>/', views.Activate.as_view(), name='activate'),
+    path('donation/confirm/', views.DonationSuccess.as_view(), name="success"),
+    path('activate/<str:uidb64>/<str:token>/', views.Activate.as_view(), name='activate')
 ]
