@@ -235,6 +235,39 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$step.parentElement.hidden = this.currentStep >= 6;
 
       // TODO: get data from inputs and show them in summary
+      let multiForm = this.$form.querySelector("form")
+      let summary = document.querySelectorAll(".summary--text")
+      let address = document.querySelector(".summary--address")
+      let delivery = document.querySelector(".summary--delivery")
+      let bags = multiForm.elements['quantity'].value.toString()
+      let categories = multiForm.querySelectorAll('input[name="categories"]:checked')
+      let institution = multiForm.querySelector('input[name="institution"]:checked').dataset
+      let street = multiForm.querySelector('input[name="address"]').value
+      let city = multiForm.querySelector('input[name="city"]').value
+      let zip_code = multiForm.querySelector('input[name="zip_code"]').value
+      let phone_number = multiForm.querySelector('input[name="phone_number"]').value
+      let pick_up_date = multiForm.querySelector('input[name="pick_up_date"]').value
+      let pick_up_time = multiForm.querySelector('input[name="pick_up_time"]').value
+      let pick_up_comment = document.querySelector('#pick_up_comment').value
+
+
+      if (bags === '1') {
+        summary[0].innerText = bags + ' worek'
+      }
+      else if (bags.slice(-1) === '2' || bags.slice(-1) === '3' || bags.slice(-1) === '4') {
+        summary[0].innerText = bags + ' worki'
+      }
+      else {
+        summary[0].innerText = bags + ' worków'
+      }
+      summary[1].innerText = institution.type + ' ' + institution.name
+      address.children[0].innerText = street
+      address.children[1].innerText = city  
+      address.children[2].innerText = zip_code
+      address.children[3].innerText = phone_number
+      delivery.children[0].innerText = pick_up_date
+      delivery.children[1].innerText = pick_up_time
+      delivery.children[2].innerText = pick_up_comment
     }
 
     /**

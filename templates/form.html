@@ -71,7 +71,7 @@
             {% for category in categories %}
             <div class="form-group form-group--checkbox">
               <label>
-                <input type="checkbox" name="categories" value={{ category.pk }}>
+                <input type="checkbox" name="categories" value={{ category.pk }} data-value="{{ category.name }}">
                 <span class="checkbox"></span>
                 <span class="description">{{ category.name }}</span>
               </label>
@@ -107,7 +107,7 @@
             {% for institution in institutions %}
             <div class="form-group form-group--checkbox">
               <label>
-                <input type="radio" name="institution" value={{ institution.pk }}>
+                <input type="radio" name="institution" value={{ institution.pk }} data-name="{{ institution.name }}" data-type="{{ institution.get_institution_type_display }}">
                 <span class="checkbox radio"></span>
                 <span class="description">
                   <div class="title">{{ institution.name }}</div>
@@ -164,7 +164,7 @@
                 <div class="form-group form-group--inline">
                   <label>
                     Uwagi dla kuriera
-                    <textarea name="pick_up_comment" rows="5"></textarea>
+                    <textarea id="pick_up_comment" name="pick_up_comment" rows="5"></textarea>
                   </label>
                 </div>
               </div>
@@ -185,7 +185,7 @@
                 <ul>
                   <li>
                     <span class="icon icon-bag"></span>
-                    <span class="summary--text"
+                    <span class="summary--text" 
                       >4 worki ubrań w dobrym stanie dla dzieci</span
                     >
                   </li>
@@ -202,7 +202,7 @@
               <div class="form-section form-section--columns">
                 <div class="form-section--column">
                   <h4>Adres odbioru:</h4>
-                  <ul>
+                  <ul class='summary--address'>
                     <li>Prosta 51</li>
                     <li>Warszawa</li>
                     <li>99-098</li>
@@ -212,7 +212,7 @@
 
                 <div class="form-section--column">
                   <h4>Termin odbioru:</h4>
-                  <ul>
+                  <ul class='summary--delivery'>
                     <li>13/12/2018</li>
                     <li>15:40</li>
                     <li>Brak uwag</li>
