@@ -21,6 +21,7 @@ from sharegood import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('', include('django.contrib.auth.urls')),
     path('', views.LandingPageView.as_view(), name='landing-page'),
     path('donate/', views.AddDonationView.as_view(), name='add-donation'),
